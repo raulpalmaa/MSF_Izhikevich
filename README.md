@@ -7,7 +7,8 @@ Cite this work if you use this, or parts of this material.
 ## MSF revision: 
 A quick review of the mathematical formalism can be found at MSF_101.md
 
-## Code: 
-The python standalone code msf_izhikevich.py evaluates the Lyapunov exponents of the synchronous solution.
+## Codes: 
+- The python code msf_izhikevich.py evaluates the Lyapunov exponents of the synchronous solution.
+- The python code net_izhikevich.py simulates a network of izhikevich neurons and can return the synchronization error and the timeseries of the system.
 
 
