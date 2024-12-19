@@ -1,13 +1,77 @@
 # MSF_Izhikevich
 
 The codes you will find here provide the main tools to apply the Master Stabiliy Function formalism to networks of Izhikevich neurons. 
-Results on this topic can be found in the paper: Aristides et al. , Master stability functions of networks of Izhikevich neurons (2024). 
+Results on this topic can be found in the paper: Aristides et al. , *Master stability functions of networks of Izhikevich neurons* (2024). 
 Cite this work if you use this, or parts of this, repository.
 
-## Master stability function formalism 101
+## Master stability function 101
+
+The master stability function (MSF) was proposed in Pecora and Carroll, *Master Stability Functions for Synchronized Coupled Systems* (1998). Here we briefly revise the formalism.
+
+Let there be $N$ nodes, with $\mathbf{x}^i$ being the $m$-dimensional vector of dynamical variables of the $i$ th node. The isolated dynamic of each node is described by the vector field $\mathbf{F} : \mathbb{R} \rightarrow \mathbb{R}^m$, i.e. $\mathbf{\dot{x}}^i = \mathbf{F}(\mathbf{x}^i)$. $\mathbf{H}: \mathbb{R}^m \rightarrow \mathbb{R}^m$ is a function of each node's variables that is used together with the structure of the network to define the coupling. Let $\mathbf{x} = [\mathbf{x}^1, \mathbf{x}^2, ...,\mathbf{x}^N]^T$, $\mathbf{F}(\mathbf{x}) = [\mathbf{F}(\mathbf{x}^1), \mathbf{F}(\mathbf{x}^2), ..., \mathbf{F}(\mathbf{x}^N)]^T$ and $\mathbf{H}(\mathbf{x}) = [\mathbf{H}(\mathbf{x}^1),\mathbf{H}(\mathbf{x}^2), ...,\mathbf{H}(\mathbf{x}^N)]^T$. Then, in the case of diffusive coupling, the equations of motion are
+```math
+\mathbf{\dot{x}} = \mathbf{F}(\mathbf{x}) - \sigma L \otimes \mathbf{H}(\mathbf{x}) \quad\quad\quad\quad(1)
+```
+where $\sigma$ is the coupling strength and $L$ is the Laplacian matrix, which is given by
+```math
+L = \{L_{ij}\},\quad L_{ij} = A_{ij} - \delta_{ij} \sum_j A_{ij},
+```
+where $A$ is the symmetric adjacency matrix and $\delta_{ij}$ is the Kronecker delta. 
+The synchronization manifold $\mathbf{x}^s$ is defined by the $N-1$ constraints
+```math
+    \mathbf{x}^1 = \mathbf{x}^2 = ... = \mathbf{x}^N \ .
+```
+Note that
+```math
+    L \otimes \mathbf{H}(\mathbf{x}^s) = \mathbf{0} \ ,
+```
+which leads to the synchronized solution $\dot{\mathbf{x}^s} = \mathbf{F}(\mathbf{x}^s)$.
+To study the stability of the synchronization solution, we analyze how small perturbations around it evolve, i.e. $\delta\mathbf{x}^i = \mathbf{x}^i - \mathbf{x}^s$,
+where $\mathbf{x}^s = [x_s, y_s, z_s]^T$. Using linear stability analysis, we have for each node
+```math
+    \dot{\mathbf{x}^i} \approx \mathbf{F}(\mathbf{x}^s) + D\mathbf{F}(\mathbf{x}) \Big|_{\mathbf{x}^s} \delta\mathbf{x}^i - \sigma \sum_j L_{ij} D \mathbf{H}(\mathbf{x})\Big|_{\mathbf{x}^s} \delta\mathbf{x}^j 
+```
+hence
+```math
+    \delta \dot{\mathbf{x}^i} = \dot{\mathbf{x}^i} - \dot{\mathbf{x}^s} = D\mathbf{F}(\mathbf{x}) \Big|_{\mathbf{x}^s} \delta\mathbf{x}^i - \sigma\sum_j L_{ij} D \mathbf{H}(\mathbf{x})\Big|_{\mathbf{x}^s} \delta\mathbf{x}^j
+```
+where $D$ is the Jacobian matrix. We can rewrite latter, considering the block form of the equations, as
+```math
+    \delta\mathbf{\dot{x}} = [\mathbf{I}_N \otimes D \mathbf{F}(\mathbf{x}^s) - \sigma L \otimes D\mathbf{H}(\mathbf{x}^s)] \delta \mathbf{x} \ \quad\quad\quad\quad(2).
+```
+Now let's turn our attention to our Laplacian matrix. In the general case of symmetric and undirected coupling, $L$ have important properties:
+- A real non-negative set of eigenvalues ($\gamma_i \geq 0$)
+- The associated set of eigenvectors constitutes an orthonormal basis of $\mathbb{R}^N$
+- The smallest eigenvalue is $\gamma_1 = 0$, which is associated to the eigenvector
+```math
+    V_1 = \pm\frac{1}{\sqrt{N}}(1,1,1,...,1)^T \ .
+```
+Hence, $V_1$ is aligned with the synchronization manifold $\mathcal{S}$, and all the other eigenvalues have associated eigenvectors spanning all the phase space transverse to $\mathcal{S}$.
+Due to these properties, $L$ has a diagonalization form 
+```math
+    V^{-1} L V = \mathbf{\Gamma} = \text{diag}(\gamma_1, \gamma_2, ..., \gamma_N)
+```
+where $V = [V_1,V_2,...,V_N]$ is an orthonormal matrix whose columns are eigenvectors of $L$, and $\mathbf{\Gamma}$ is a diagonal matrix whose diagonal elements are associated eigenvalues ordered by magnitude.
+
+We define a new set of variables $\eta = (V^{-1} \otimes \mathbf{I}_m)\delta\mathbf{x}$, so that Eq. (2) becomes
+```math
+    (V \otimes I_m) \dot{\eta} = [\mathbf{I}_N \otimes D \mathbf{F}(\mathbf{x}^s) - \sigma L \otimes D\mathbf{H}(\mathbf{x}^s)] (V \otimes \mathbf{I}_m)\eta
+```
+solving for $\delta\eta$
+```math
+    \dot{\eta} = (V^{-1} \otimes \mathbf{I}_m) [\mathbf{I}_N \otimes D \mathbf{F}(\mathbf{x}^s) - \sigma L \otimes D\mathbf{H}(\mathbf{x}^s)] (V \otimes \mathbf{I}_m)\eta
+```
+which give us
+```math
+    \dot{\eta} = [\mathbf{I}_N \otimes D \mathbf{F}(\mathbf{x}^s) - \sigma \mathbf{\Gamma} \otimes D\mathbf{H}(\mathbf{x}^s)] \eta \ \quad\quad\quad\quad(3).
+```
+Equation (3) is the known as the \textit{master stability function}, a block-diagonalized variational equation where each block having the form
+```math
+    \delta\dot{\eta}_k = [D\mathbf{F}(\mathbf{x}^s) + \sigma \gamma_k D \mathbf{H}(\mathbf{x}^s)] \delta\eta_k
+```
+therefore we have successfully decoupled the variational Eq. (2), with $\eta_1$ accounting for the motion along the synchronous manifold, and all the other variables $\eta_i (i > 1)$, representing transverse modes to the synchronous one. 
 
 
 ## Lyapunov exponents of discontinous systems
 
-The algorithm we used to evaluate the Lyapunov exponent related to the synchronous solution is the same used to calculate the LE of a isolated system.
-For more information about it we recoomend the following paper: Bizzarri et al, Lyapunov exponents computation for hybrid neurons (2013).
+The algorithm used to evaluate the Lyapunov exponent associated with the synchronous solution is the same as that for calculating the LE of an isolated system. The Saltation matrices method was first applied to Izhikevich neurons by Bizzarri et al. in *Lyapunov Exponents Computation for Hybrid Neurons* (2013), where further details can be found.
