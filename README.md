@@ -1,4 +1,4 @@
-### Master Stability Function (MSF) Tools for Izhikevich Neuron Networks
+### Master Stability Function (MSF) Tools for Networks of Izhikevich Neurons
 
 Welcome! 
 The material you will find here provides the main tools to apply the Master stability function (MSF) formalism to networks of Izhikevich neurons. 
