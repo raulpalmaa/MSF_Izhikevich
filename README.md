@@ -5,7 +5,7 @@ Results on this topic can be found in the paper: [Aristides and Cerdeira , *Mast
 Cite this work if you use this material or any parts of it :)
 
 ## MSF review: 
-A quick review of the mathematical formalism can be found at MSF_101.md
+A quick review of the mathematical formalism can be found at msf_101.md
 
 ## Codes: 
 - The Python code msf_izhikevich.py evaluates the Lyapunov exponents of the synchronous solution.
