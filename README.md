@@ -9,7 +9,7 @@ If you use this material or any part of it in your work, please cite this paper 
 A quick review of the mathematical formalism can be found at msf_101.md
 
 ## Codes: 
-- The Python code msf_izhikevich.py evaluates the Lyapunov exponents of the synchronous solution.
-- The Python code net_izhikevich.py simulates a network of Izhikevich neurons and can return the synchronization error and the time series of the system.
+- A minimal Python code msf_izhikevich.py evaluates the Lyapunov exponents of the synchronous solution.
+- A minimal Python code net_izhikevich.py simulates a network of Izhikevich neurons and can return the synchronization error and the time series of the system.
 
 
